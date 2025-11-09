@@ -32,10 +32,24 @@ async function run() {
 
         const db = client.db("food-lovers-db")
         const userCollection = db.collection('users');
+        const reviewsCollection = db.collection('reviews')
 
+        //review api call
+        app.get('/reviews',async (req,res) => {
+            const cursor = reviewsCollection.find().sort({rating : -1}).limit(6);
+            const result =await cursor.toArray();
+            res.send(result);
+        })
+
+
+        app.post('/reviews',async (req,res) => {
+            const newReview =req.body;
+            const result = await reviewsCollection.insertOne(newReview);
+            res.send(result);
+        })
 
         //user all api...
-        app.post('/users', async (req, res) => {
+        app.post('/user', async (req, res) => {
             const newUser = req.body;
             const email = req.body.email;
             const query = { email: email };
