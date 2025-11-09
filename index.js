@@ -35,20 +35,29 @@ async function run() {
         const reviewsCollection = db.collection('reviews')
 
         //review api call
-        app.get('/reviews',async (req,res) => {
-            const cursor = reviewsCollection.find().sort({rating : -1}).limit(6);
-            const result =await cursor.toArray();
-            res.send(result);
-        })
-        
-        app.get('/all-reviews',async (req,res) => {
-            const cursor = reviewsCollection.find().sort({ createdAt : -1})
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find().sort({ rating: -1 }).limit(6);
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        app.post('/reviews',async (req,res) => {
-            const newReview =req.body;
+        app.get('/all-reviews', async (req, res) => {
+            const cursor = reviewsCollection.find().sort({ createdAt: -1 })
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/myReviews', async (req, res) => {
+            const email = req.query.email;
+            const query = {};
+            query.email = email;
+            const causer = reviewsCollection.find(query).sort({ createdAt: 1 });
+            const result = await causer.toArray();
+            res.send(result);
+        })
+
+        app.post('/reviews', async (req, res) => {
+            const newReview = req.body;
             const result = await reviewsCollection.insertOne(newReview);
             res.send(result);
         })
@@ -71,7 +80,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        
+
     }
 }
 run().catch(console.dir)
