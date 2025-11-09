@@ -40,7 +40,12 @@ async function run() {
             const result =await cursor.toArray();
             res.send(result);
         })
-
+        
+        app.get('/all-reviews',async (req,res) => {
+            const cursor = reviewsCollection.find().sort({ createdAt : -1})
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
         app.post('/reviews',async (req,res) => {
             const newReview =req.body;
