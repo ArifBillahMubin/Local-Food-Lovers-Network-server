@@ -32,7 +32,8 @@ async function run() {
 
         const db = client.db("food-lovers-db")
         const userCollection = db.collection('users');
-        const reviewsCollection = db.collection('reviews')
+        const reviewsCollection = db.collection('reviews');
+        const favoriteCollection = db.collection('favorite');
 
         //review api call
         app.get('/reviews', async (req, res) => {
@@ -56,16 +57,45 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await reviewsCollection.findOne(query);
+            res.send(result);
+        })
+
         app.post('/reviews', async (req, res) => {
             const newReview = req.body;
             const result = await reviewsCollection.insertOne(newReview);
             res.send(result);
         })
 
+        app.put("/reviews/:id", async (req, res) => {
+            const { id } = req.params;
+            const data = req.body;
+            const objectId = new ObjectId(id);
+            const query = { _id: objectId };
+            const update = {
+                $set: data,
+            };
+
+            const result = await reviewsCollection.updateOne(query, update);
+
+            res.send({ result });
+        });
+
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await reviewsCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+        //favorite all api..
+        app.post('/favorite', async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewsCollection.insertOne(newReview);
             res.send(result);
         })
 
