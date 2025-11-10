@@ -107,6 +107,22 @@ async function run() {
             } 
         })
 
+        app.get('/myFavorite', async (req, res) => {
+            const userEmail = req.query.email;
+            const query = {};
+            query.userEmail = userEmail;
+            const causer = favoriteCollection.find(query);
+            const result = await causer.toArray();
+            res.send(result);
+        })
+
+        app.delete('/myFavorite/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await favoriteCollection.deleteOne(query);
+            res.send(result);
+        })
+
         //user all api...
         app.post('/user', async (req, res) => {
             const newUser = req.body;
