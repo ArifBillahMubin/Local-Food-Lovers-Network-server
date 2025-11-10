@@ -64,6 +64,14 @@ async function run() {
             res.send(result);
         })
 
+        //search api 
+        app.get("/search", async (req, res) => {
+            const search_text = req.query.search
+            const result = await reviewsCollection.find({ foodName: { $regex: search_text, $options: "i" } }).toArray()
+            res.send(result)
+        })
+        //search api end...
+
         app.post('/reviews', async (req, res) => {
             const newReview = req.body;
             const result = await reviewsCollection.insertOne(newReview);
