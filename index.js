@@ -93,10 +93,18 @@ async function run() {
 
 
         //favorite all api..
+        //in challenge req.....
         app.post('/favorite', async (req, res) => {
-            const newReview = req.body;
-            const result = await reviewsCollection.insertOne(newReview);
-            res.send(result);
+            const newFavorite = req.body;
+            const favoriteReviewCardId = req.body.favoriteReviewCardId;
+            const query = { favoriteReviewCardId: favoriteReviewCardId };
+            const existingFavorite = await favoriteCollection.findOne(query);
+            if (existingFavorite) {
+                res.send({ message: "existingFavorite" })
+            } else {
+                const result = await favoriteCollection.insertOne(newFavorite);
+                res.send(result);
+            } 
         })
 
         //user all api...
