@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
 
         const db = client.db("food-lovers-db")
         const userCollection = db.collection('users');
@@ -103,7 +103,10 @@ async function run() {
         app.post('/favorite', async (req, res) => {
             const newFavorite = req.body;
             const favoriteReviewCardId = req.body.favoriteReviewCardId;
-            const query = { favoriteReviewCardId: favoriteReviewCardId };
+            const query = { 
+                favoriteReviewCardId: favoriteReviewCardId,
+                userEmail: newFavorite.userEmail
+             };
             const existingFavorite = await favoriteCollection.findOne(query);
             if (existingFavorite) {
                 res.send({ message: "existingFavorite" })
